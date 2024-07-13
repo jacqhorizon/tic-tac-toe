@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../styles.css">
+
+    <title>Tic Tac Toe</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <h1>Tic Tac Toe</h1> -->
+    <div id="turns">
+      <p id="x-turn" class='current-turn'>X Turn</p>
+      <p id="o-turn">O Turn</p>
+    </div>
+    <div class="ui">
+      <div class="row">
+        <input
+          type="text"
+          id="b0"
+          class="cell"
+          onclick="move(this.id); evaluateGame()"
+          readonly
+        />
+        <input
+          type="text"
+          id="b1"
+          class="cell"
+          onclick="move(this.id); evaluateGame()"
+          readonly
+        />
+        <input
+          type="text"
+          id="b2"
+          class="cell"
+          onclick="move(this.id); evaluateGame()"
+          readonly
+        />
+      </div>
+      <div class="row">
+        <input
+          type="text"
+          id="b3"
+          class="cell"
+          onclick="move(this.id); evaluateGame()"
+          readonly
+        />
+        <input
+          type="text"
+          id="b4"
+          class="cell"
+          onclick="move(this.id); evaluateGame()"
+          readonly
+        />
+        <input
+          type="text"
+          id="b5"
+          class="cell"
+          onclick="move(this.id); evaluateGame()"
+          readonly
+        />
+      </div>
+      <div class="row">
+        <input
+          type="text"
+          id="b6"
+          class="cell"
+          onclick="move(this.id); evaluateGame()"
+          readonly
+        />
+        <input
+          type="text"
+          id="b7"
+          class="cell"
+          onclick="move(this.id); evaluateGame()"
+          readonly
+        />
+        <input
+          type="text"
+          id="b8"
+          class="cell"
+          onclick="move(this.id); evaluateGame()"
+          readonly
+        />
+      </div>
+    </div>
+    <div id='end' style='visibility: hidden;'>
+        <p id='end-text'></p>
+        <button onclick='reset()'>Play Again</button>
+        <button onclick='toTitle()'>Title Screen</button>
+    </div>
+    <script src="../scripts.js"></script>
+  </body>
+</html>
