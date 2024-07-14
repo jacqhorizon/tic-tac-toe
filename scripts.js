@@ -40,6 +40,7 @@ function evaluateGame() {
     value = 'XXX'
     winner = 'X'
   }
+  let winFound = false
   let winMap = [
     //horizontals
     [0, 1, 2],
@@ -54,19 +55,23 @@ function evaluateGame() {
     [6, 4, 2]
   ]
 
-  for (let x = 0; x < winMap.length; x++) {
+  for (let x = 0; x < winMap.length && !winFound; x++) {
     let sum = ''
     for (let i = 0; i < winMap[x].length; i++) {
       sum += arr[winMap[x][i]]
     }
     if (sum === value) {
       console.log(winner + ' wins!')
+      winFound = true
       document.getElementById('end-text').innerHTML = winner + ' wins'
-      document.getElementById('end-screen').style.display = 'block'
+      document.getElementById('end-screen').style.display = 'flex'
     }
   }
-  //TO DO: TIE
-console.log(arr)
+  if (!winFound && !arr.includes('')) {
+    document.getElementById('end-text').innerHTML = 'Tie!'
+    document.getElementById('end-screen').style.display = 'grid'
+  }
+  console.log(arr)
 }
 
 function reset() {
@@ -75,7 +80,7 @@ function reset() {
     document.getElementById(id).value = ''
     document.getElementById(id).disabled = false
   }
-  xTurn = true;
+  xTurn = true
   document.getElementById('end-screen').style.display = 'none'
   document.getElementById('x-turn').classList.add('current-turn')
   document.getElementById('o-turn').classList.remove('current-turn')
@@ -83,6 +88,6 @@ function reset() {
 
 function toTitle() {
   reset()
-  document.getElementById('title-screen').style.display = 'block'
+  document.getElementById('title-screen').style.display = 'flex'
   document.getElementById('game-screen').style.display = 'none'
 }

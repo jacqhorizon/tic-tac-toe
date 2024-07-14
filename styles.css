@@ -1,6 +1,8 @@
 body {
 display: flex;
 justify-content: center;
+align-items: center;
+height: 90vh;
 }
 
 .container {
@@ -13,15 +15,41 @@ justify-content: center;
 }
 
 #title-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 /* visibility: visible; */
 }
+.row {
+    display: flex;
 
+}
+.cell {
+    text-align: center; 
+    /* display: flex; 
+    align-items: center; 
+    justify-content: center;  */
+    width: min(25vw, 25vh);
+    height: min(25vw, 25vh);
+    font-size: 30px;
+    cursor: pointer;
+}
 #game-screen {
     display: none;
 }
-
+#end-content {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
 #end-screen {
-    display: none;
+    /* display: none; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     position: absolute;
     background-color: rgba(0,0,0,0.5);
     left: 0;
@@ -29,6 +57,12 @@ justify-content: center;
     width: 100%;
     height: 100%;
 }
+
+#end-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
 .current-turn {
     /* color: red; */
     background-color: lightcoral;
