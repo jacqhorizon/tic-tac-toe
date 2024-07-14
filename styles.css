@@ -1,7 +1,35 @@
-p {
+body {
+display: flex;
+justify-content: center;
+}
+
+.container {
 
 }
 
+#turns {
+    display: flex;
+    justify-content: space-between;
+}
+
+#title-screen {
+/* visibility: visible; */
+}
+
+#game-screen {
+    display: none;
+}
+
+#end-screen {
+    display: none;
+    position: absolute;
+    background-color: rgba(0,0,0,0.5);
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
 .current-turn {
-    color: red;
+    /* color: red; */
+    background-color: lightcoral;
 }

@@ -15,12 +15,12 @@
     <div id="title-screen">
       <h1>Tic Tac Toe</h1>
       <button onclick="startGame()">Start</button>
-      <a href="html/gameScreen.html">Start Game</a>
     </div>
-    <div class="game-screen">
+
+    <div id="game-screen">
       <div id="turns">
-        <p id="x-turn" class="current-turn">X Turn</p>
-        <p id="o-turn">O Turn</p>
+        <div id="x-turn" class="current-turn">X Turn</div>
+        <div id="o-turn">O Turn</div>
       </div>
       <div class="row">
         <input
@@ -92,12 +92,13 @@
         />
       </div>
     </div>
-    <div id="end-screen" style="visibility: hidden">
+
+    <div id="end-screen">
       <p id="end-text"></p>
       <button onclick="reset()">Play Again</button>
       <button onclick="toTitle()">Title Screen</button>
     </div>
-    <div id="container"></div>
+
     <script src="scripts.js"></script>
   </body>
 </html>

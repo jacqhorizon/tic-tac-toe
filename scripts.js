@@ -1,34 +1,11 @@
-// alert('You successfully linked your JavaScript file!');
+var xTurn = true
+var winner = ''
 
-function startGame(params) {
-  let container = document.getElementById('container')
-  let turns = document.createElement('div')
-  turns.id='turns'
-  let xTurn = document.createElement('p')
-  xTurn.id ='x-turn'
-  xTurn.className = 'current-turn'
-  xTurn.innerHTML = 'X Turn'
-  turns.appendChild(xTurn)
-  let oTurn = document.createElement('p')
-  oTurn.innerHTML = 'O Turn'
-  oTurn.id = 'o-turn'
-  turns.appendChild(oTurn)
-  container.appendChild(turns)
-  for (let i = 0; i < 9; i++) {
-    let id = 'b' + i
-    let newButton = document.createElement('input')
-    newButton.id = id
-    newButton.className = 'cell'
-    newButton.type = 'text'
-    newButton.addEventListener('click', (e) => {
-      move(e.target.id)
-      evaluateGame()
-    })
-    container.appendChild(newButton)
-  }
+function startGame() {
+  document.getElementById('title-screen').style.display = 'none'
+  document.getElementById('game-screen').style.display = 'block'
 }
 
-var xTurn = true
 function move(id) {
   var value
   if (xTurn) {
@@ -49,13 +26,10 @@ function move(id) {
   }
 }
 
-var winner
 function evaluateGame() {
-    console.log('evaluate')
   var arr = []
   for (let i = 0; i < 9; i++) {
     var id = 'b' + i
-    // console.log(id)
     arr.push(document.getElementById(id).value)
   }
   var value
@@ -74,8 +48,12 @@ function evaluateGame() {
     //verticals
     [0, 3, 6],
     [1, 4, 7],
-    [2, 5, 8]
+    [2, 5, 8],
+    //diagonals
+    [0, 4, 8],
+    [6, 4, 2]
   ]
+
   for (let x = 0; x < winMap.length; x++) {
     let sum = ''
     for (let i = 0; i < winMap[x].length; i++) {
@@ -83,27 +61,28 @@ function evaluateGame() {
     }
     if (sum === value) {
       console.log(winner + ' wins!')
-      const node = document.createTextNode(winner + ' wins')
-      document.getElementById('end-text').appendChild(node)
-      document.getElementById('end').style.visibility = 'visible'
+      document.getElementById('end-text').innerHTML = winner + ' wins'
+      document.getElementById('end-screen').style.display = 'block'
     }
   }
-
-  console.log(arr)
-  //   console.log('this will check if the game is won')
+  //TO DO: TIE
+console.log(arr)
 }
 
 function reset() {
   for (let i = 0; i < 9; i++) {
     var id = 'b' + i
-    // console.log(id)
     document.getElementById(id).value = ''
     document.getElementById(id).disabled = false
-    document.getElementById('end').style.visibility = 'hidden'
   }
+  xTurn = true;
+  document.getElementById('end-screen').style.display = 'none'
+  document.getElementById('x-turn').classList.add('current-turn')
+  document.getElementById('o-turn').classList.remove('current-turn')
 }
 
 function toTitle() {
   reset()
-  window.location.href = '../index.html'
+  document.getElementById('title-screen').style.display = 'block'
+  document.getElementById('game-screen').style.display = 'none'
 }
