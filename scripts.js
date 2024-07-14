@@ -1,6 +1,31 @@
 // alert('You successfully linked your JavaScript file!');
+
 function startGame(params) {
-  console.log('start game')
+  let container = document.getElementById('container')
+  let turns = document.createElement('div')
+  turns.id='turns'
+  let xTurn = document.createElement('p')
+  xTurn.id ='x-turn'
+  xTurn.className = 'current-turn'
+  xTurn.innerHTML = 'X Turn'
+  turns.appendChild(xTurn)
+  let oTurn = document.createElement('p')
+  oTurn.innerHTML = 'O Turn'
+  oTurn.id = 'o-turn'
+  turns.appendChild(oTurn)
+  container.appendChild(turns)
+  for (let i = 0; i < 9; i++) {
+    let id = 'b' + i
+    let newButton = document.createElement('input')
+    newButton.id = id
+    newButton.className = 'cell'
+    newButton.type = 'text'
+    newButton.addEventListener('click', (e) => {
+      move(e.target.id)
+      evaluateGame()
+    })
+    container.appendChild(newButton)
+  }
 }
 
 var xTurn = true
@@ -22,11 +47,11 @@ function move(id) {
     document.getElementById('o-turn').classList.add('current-turn')
     document.getElementById('x-turn').classList.remove('current-turn')
   }
-
 }
 
 var winner
 function evaluateGame() {
+    console.log('evaluate')
   var arr = []
   for (let i = 0; i < 9; i++) {
     var id = 'b' + i
@@ -69,16 +94,16 @@ function evaluateGame() {
 }
 
 function reset() {
-    for (let i = 0; i < 9; i++) {
-        var id = 'b' + i
-        // console.log(id)
-        document.getElementById(id).value = ''
-        document.getElementById(id).disabled = false
-        document.getElementById('end').style.visibility = 'hidden'
-      }
+  for (let i = 0; i < 9; i++) {
+    var id = 'b' + i
+    // console.log(id)
+    document.getElementById(id).value = ''
+    document.getElementById(id).disabled = false
+    document.getElementById('end').style.visibility = 'hidden'
+  }
 }
 
 function toTitle() {
-    reset()
-    window.location.href = '../index.html'
+  reset()
+  window.location.href = '../index.html'
 }
