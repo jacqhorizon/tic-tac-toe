@@ -61,7 +61,6 @@ function evaluateGame() {
       sum += arr[winMap[x][i]]
     }
     if (sum === value) {
-      console.log(winner + ' wins!')
       winFound = true
       document.getElementById('end-text').innerHTML = winner + ' wins'
       document.getElementById('end-screen').style.display = 'flex'
@@ -71,7 +70,6 @@ function evaluateGame() {
     document.getElementById('end-text').innerHTML = 'Tie!'
     document.getElementById('end-screen').style.display = 'grid'
   }
-  console.log(arr)
 }
 
 function reset() {

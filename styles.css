@@ -18,7 +18,6 @@ height: 90vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-/* visibility: visible; */
 }
 .row {
     display: flex;
@@ -26,9 +25,6 @@ height: 90vh;
 }
 .cell {
     text-align: center; 
-    /* display: flex; 
-    align-items: center; 
-    justify-content: center;  */
     width: min(25vw, 25vh);
     height: min(25vw, 25vh);
     font-size: 30px;
@@ -45,8 +41,8 @@ height: 90vh;
     flex-direction: column;
 }
 #end-screen {
-    /* display: none; */
-    display: flex;
+    display: none;
+    /* display: flex; */
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -64,6 +60,5 @@ height: 90vh;
 }
 
 .current-turn {
-    /* color: red; */
     background-color: lightcoral;
 }
