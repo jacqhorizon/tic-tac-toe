@@ -19,75 +19,75 @@
 
     <div id="game-screen">
       <div id="turns">
-        <div id="x-turn" class="current-turn">X Turn</div>
+        <div id="x-turn">X Turn</div>
         <div id="o-turn">O Turn</div>
       </div>
       <div class="row">
         <input
           type="text"
-          id="b0"
+          id="c0"
           class="cell"
-          onclick="move(this.id); evaluateGame()"
+          onclick="game.move('X', this.id)"
           readonly
         />
         <input
           type="text"
-          id="b1"
+          id="c1"
           class="cell"
-          onclick="move(this.id); evaluateGame()"
+          onclick="game.move('X', this.id)"
           readonly
         />
         <input
           type="text"
-          id="b2"
+          id="c2"
           class="cell"
-          onclick="move(this.id); evaluateGame()"
-          readonly
-        />
-      </div>
-      <div class="row">
-        <input
-          type="text"
-          id="b3"
-          class="cell"
-          onclick="move(this.id); evaluateGame()"
-          readonly
-        />
-        <input
-          type="text"
-          id="b4"
-          class="cell"
-          onclick="move(this.id); evaluateGame()"
-          readonly
-        />
-        <input
-          type="text"
-          id="b5"
-          class="cell"
-          onclick="move(this.id); evaluateGame()"
+          onclick="game.move('X', this.id)"
           readonly
         />
       </div>
       <div class="row">
         <input
           type="text"
-          id="b6"
+          id="c3"
           class="cell"
-          onclick="move(this.id); evaluateGame()"
+          onclick="game.move('X', this.id)"
           readonly
         />
         <input
           type="text"
-          id="b7"
+          id="c4"
           class="cell"
-          onclick="move(this.id); evaluateGame()"
+          onclick="game.move('X', this.id)"
           readonly
         />
         <input
           type="text"
-          id="b8"
+          id="c5"
           class="cell"
-          onclick="move(this.id); evaluateGame()"
+          onclick="game.move('X', this.id)"
+          readonly
+        />
+      </div>
+      <div class="row">
+        <input
+          type="text"
+          id="c6"
+          class="cell"
+          onclick="game.move('X', this.id)"
+          readonly
+        />
+        <input
+          type="text"
+          id="c7"
+          class="cell"
+          onclick="game.move('X', this.id)"
+          readonly
+        />
+        <input
+          type="text"
+          id="c8"
+          class="cell"
+          onclick="game.move('X', this.id)"
           readonly
         />
       </div>
@@ -97,7 +97,7 @@
       <div id='end-content'>
           <h1 id="end-text"></h1>
           <div id="end-buttons">
-            <button onclick="reset()">Play Again</button>
+            <button onclick="startGame()">Play Again</button>
             <button onclick="toTitle()">Title Screen</button>
           </div>
       </div>
