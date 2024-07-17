@@ -10,24 +10,12 @@ function startGame() {
     document.getElementById(id).disabled = false
   })
   document
-  .getElementById(game.currentTurn.toLowerCase() + '-turn')
-  .classList.add('current-turn')
+    .getElementById(game.currentTurn.toLowerCase() + '-turn')
+    .classList.add('current-turn')
   document.getElementById('title-screen').style.display = 'none'
   document.getElementById('end-screen').style.display = 'none'
   document.getElementById('game-screen').style.display = 'block'
 }
-
-// function reset() {
-//   for (let i = 0; i < 9; i++) {
-//     var id = 'b' + i
-//     document.getElementById(id).value = ''
-//     document.getElementById(id).disabled = false
-//   }
-//   xTurn = true
-//   document.getElementById('end-screen').style.display = 'none'
-//   document.getElementById('x-turn').classList.add('current-turn')
-//   document.getElementById('o-turn').classList.remove('current-turn')
-// }
 
 function toTitle() {
   document.getElementById('title-screen').style.display = 'flex'
@@ -44,19 +32,23 @@ class Game {
     this.currentTurn = 'X'
   }
 
-  move(turn, position) {
+  move(position) {
     console.log('move!')
-    //Place move on board
-    document
-      .getElementById(this.currentTurn.toLowerCase() + '-turn')
-      .classList.remove('current-turn')
+    //Update game board info
     this.board[position[1]] = this.currentTurn
+    //Render move on board
     document.getElementById(position).value = this.currentTurn
     document.getElementById(position).disabled = true
+    //Evaluate game status
     if (this.win(this.currentTurn)) {
-      this.endGame()
+      this.endGame(false)
+    } else if (!this.board.includes('')) {
+      this.endGame(true)
     } else {
       //Set the next turn
+      document
+        .getElementById(this.currentTurn.toLowerCase() + '-turn')
+        .classList.remove('current-turn')
       let nextTurn = 'X'
       if (this.currentTurn == 'X') {
         nextTurn = 'O'
@@ -92,15 +84,16 @@ class Game {
       if (sum == this.currentTurn.repeat(3)) {
         return true
       }
-      // if (!this.board.includes('')) {
-
-      // }
     }
     return false
   }
 
-  endGame() {
-    document.getElementById('end-text').innerHTML = this.currentTurn + ' wins'
+  endGame(tie) {
+    let title = this.currentTurn + ' wins'
+    if (tie) {
+      title = 'Tie!'
+    }
+    document.getElementById('end-text').innerHTML = title
     document.getElementById('end-screen').style.display = 'flex'
   }
 }
