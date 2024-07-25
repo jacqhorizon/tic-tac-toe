@@ -1,9 +1,11 @@
-// var xTurn = true
-var winner = ''
 let game
 
 function startGame() {
-  game = new Game()
+  let emptyBoard = []
+  for (let i = 0; i < 9; i++) {
+    emptyBoard.push('')
+  }
+  game = new Game(emptyBoard, 'X')
   game.board.forEach((value, i) => {
     var id = 'c' + i
     document.getElementById(id).value = value
@@ -24,12 +26,9 @@ function toTitle() {
 }
 
 class Game {
-  constructor() {
-    this.board = []
-    for (let i = 0; i < 9; i++) {
-      this.board.push('')
-    }
-    this.currentTurn = 'X'
+  constructor(board, currentTurn) {
+    this.board = board
+    this.currentTurn = currentTurn
   }
 
   move(position) {
@@ -39,6 +38,7 @@ class Game {
     //Render move on board
     document.getElementById(position).value = this.currentTurn
     document.getElementById(position).disabled = true
+    // this.nextMoves()
     //Evaluate game status
     if (this.win(this.currentTurn)) {
       this.endGame(false)
@@ -49,16 +49,22 @@ class Game {
       document
         .getElementById(this.currentTurn.toLowerCase() + '-turn')
         .classList.remove('current-turn')
-      let nextTurn = 'X'
-      if (this.currentTurn == 'X') {
-        nextTurn = 'O'
-      }
+      let nextTurn = this.nextTurn()
       this.currentTurn = nextTurn
       document
         .getElementById(nextTurn.toLowerCase() + '-turn')
         .classList.add('current-turn')
     }
     console.log(this.board)
+    this.minimax()
+    // console.log(this.minimax(new Game(this.board, this.currentTurn)).bind(this))
+  }
+  nextTurn() {
+    if (this.currentTurn == 'X') {
+      return 'O'
+    } else {
+      return 'X'
+    }
   }
 
   win(turn) {
@@ -81,12 +87,71 @@ class Game {
       for (let y = 0; y < winMap[x].length; y++) {
         sum += this.board[winMap[x][y]]
       }
-      if (sum == this.currentTurn.repeat(3)) {
+      if (sum == turn.repeat(3)) {
         return true
       }
     }
     return false
   }
+
+  score() {
+    if(this.game.win('X')) {
+      return 10
+    } else if (this.game.win('O')) {
+      return -10
+    } else {
+      return 0
+    }
+  }
+
+  nextMoves() {
+    let arr = []
+    for (let i = 0; i < 9; i++) {
+      if (this.board[i] == '') {
+        let newBoard = [...this.board]
+        newBoard[i] = this.currentTurn // O
+        let nextMove = new Game(newBoard, this.nextTurn()) //O
+        arr.push(nextMove)
+      } 
+    }
+    return arr
+  }
+
+  test() {
+    if(!this.board.includes('')) {
+      return 10
+    } else {
+      for(let i = 0; i < this.board.length; i++) {
+        if (this.board[i] == '') {
+          let board = [...this.board]
+          board[i] = 'X'
+          return new Game(board, 'X')
+        }
+      }
+    }
+  }
+  minimax() {
+    console.log(this)
+    // console.log(game)
+    if (!this.board.includes('')) { //game over
+      return 10
+      // return game.score
+    } else {
+      let arr = []
+      // let game = new Game(this.board, this.currentTurn)
+      let nextMoves = this.nextMoves() //fix
+      nextMoves.forEach((move, index) => {
+        console.log(move)
+        // arr.push(move.minimax())
+        return move.minimax()
+      }) //index will be inccorect
+      // if (game.currentTurn = 'X') {
+        return arr[0] //change to max later
+      // }
+    }
+  }
+  
+
 
   endGame(tie) {
     let title = this.currentTurn + ' wins'
@@ -97,3 +162,10 @@ class Game {
     document.getElementById('end-screen').style.display = 'flex'
   }
 }
+
+let emptyBoard = []
+for (let i = 0; i < 9; i++) {
+  emptyBoard.push('')
+}
+game = new Game(emptyBoard, 'X')
+console.log(game.nextMoves())
