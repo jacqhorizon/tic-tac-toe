@@ -5,7 +5,7 @@ function startGame() {
   for (let i = 0; i < 9; i++) {
     emptyBoard.push('')
   }
-  game = new Game(emptyBoard, 'X')
+  game = new Game(emptyBoard, 'x')
   game.board.forEach((value, i) => {
     var id = 'c' + i
     document.getElementById(id).value = value
@@ -25,50 +25,76 @@ function toTitle() {
   document.getElementById('game-screen').style.display = 'none'
 }
 
+let choice
 class Game {
   constructor(board, currentTurn) {
-    this.board = board
-    this.currentTurn = currentTurn
+    this.over = false
+    this.currentTurn = 'x'
+    if (currentTurn) {
+      this.currentTurn = currentTurn
+    }
+    this.board = ['', '', '', '', '']
+    if (board) {
+      this.board = board
+    }
+    if (this.checkWin('x') || this.checkWin('o') || !this.board.includes('')) {
+      this.over = true
+    }
   }
 
-  move(position) {
-    console.log('move!')
-    //Update game board info
-    this.board[position[1]] = this.currentTurn
-    //Render move on board
-    document.getElementById(position).value = this.currentTurn
-    document.getElementById(position).disabled = true
-    // this.nextMoves()
-    //Evaluate game status
-    if (this.win(this.currentTurn)) {
-      this.endGame(false)
-    } else if (!this.board.includes('')) {
-      this.endGame(true)
+  move(index) {
+    this.board[index] = this.currentTurn
+    var id = 'c' + index
+    document.getElementById(id).value = this.currentTurn
+    document.getElementById(id).disabled = false
+    if (this.checkWin(this.currentTurn)) {
+      this.over = true
+      document.getElementById('end-text').innerHTML =
+        this.currentTurn + ' wins!'
+      document.getElementById('end-screen').style.display = 'flex'
     } else {
-      //Set the next turn
       document
-        .getElementById(this.currentTurn.toLowerCase() + '-turn')
+        .getElementById(game.currentTurn.toLowerCase() + '-turn')
         .classList.remove('current-turn')
-      let nextTurn = this.nextTurn()
-      this.currentTurn = nextTurn
+      if (this.currentTurn == 'x') {
+        this.currentTurn = 'o'
+      } else {
+        this.currentTurn = 'x'
+      }
       document
-        .getElementById(nextTurn.toLowerCase() + '-turn')
+        .getElementById(game.currentTurn.toLowerCase() + '-turn')
         .classList.add('current-turn')
     }
-    console.log(this.board)
-    this.minimax()
-    // console.log(this.minimax(new Game(this.board, this.currentTurn)).bind(this))
-  }
-  nextTurn() {
-    if (this.currentTurn == 'X') {
-      return 'O'
-    } else {
-      return 'X'
-    }
   }
 
-  win(turn) {
-    let winFound = false
+  turn(index) {
+    this.move(index)
+    setTimeout(() => {
+      if (!this.over) {
+        minimax(this)
+        this.move(choice)
+      }
+      console.log(this)
+    }, 1000)
+  }
+  nextMoves() {
+    let moves = []
+    let nextTurn = 'o'
+    if (this.currentTurn == 'o') {
+      nextTurn = 'x'
+    }
+    for (let i = 0; i < this.board.length; i++) {
+      let copy = [...this.board]
+      if (this.board[i] == '') {
+        // copy[i] = this.currentTurn
+        // moves.push(new Game(copy, nextTurn))
+        moves.push(i)
+      }
+    }
+    return moves //return array of indexes
+  }
+
+  checkWin(currentPlayer) {
     let winMap = [
       //horizontals
       [0, 1, 2],
@@ -82,90 +108,80 @@ class Game {
       [0, 4, 8],
       [6, 4, 2]
     ]
-    for (let x = 0; x < winMap.length && !winFound; x++) {
-      let sum = ''
-      for (let y = 0; y < winMap[x].length; y++) {
-        sum += this.board[winMap[x][y]]
-      }
-      if (sum == turn.repeat(3)) {
+    for (let i = 0; i < winMap.length; i++) {
+      const [a, b, c] = winMap[i]
+      if (
+        this.board[a] === currentPlayer &&
+        this.board[b] === currentPlayer &&
+        this.board[c] === currentPlayer
+      ) {
         return true
       }
     }
     return false
   }
+}
 
-  score() {
-    if(this.game.win('X')) {
-      return 10
-    } else if (this.game.win('O')) {
-      return -10
-    } else {
-      return 0
-    }
+//game must be over to score
+const score = (game) => {
+  if (game.checkWin('x')) {
+    return 10
+  } else if (game.checkWin('o')) {
+    return -10
+  } else {
+    return 0
+  }
+}
+
+const minimax = (game) => {
+  if (game.over) {
+    return score(game)
+  }
+  let scores = []
+  let moves = []
+
+  let nextTurn = 'o'
+  if (game.currentTurn == 'o') {
+    nextTurn = 'x'
   }
 
-  nextMoves() {
-    let arr = []
-    for (let i = 0; i < 9; i++) {
-      if (this.board[i] == '') {
-        let newBoard = [...this.board]
-        newBoard[i] = this.currentTurn // O
-        let nextMove = new Game(newBoard, this.nextTurn()) //O
-        arr.push(nextMove)
-      } 
-    }
-    return arr
-  }
-
-  test() {
-    if(!this.board.includes('')) {
-      return 10
-    } else {
-      for(let i = 0; i < this.board.length; i++) {
-        if (this.board[i] == '') {
-          let board = [...this.board]
-          board[i] = 'X'
-          return new Game(board, 'X')
-        }
+  game.nextMoves().forEach((element) => {
+    //indexes
+    let tmp = new Game([...game.board], nextTurn)
+    tmp.board[element] = game.currentTurn
+    scores.push(minimax(tmp))
+    moves.push(element)
+  })
+  if (game.currentTurn == 'o') {
+    let max = 0
+    let index = 0
+    scores.forEach((score, i) => {
+      if (score > max) {
+        max = score
+        index = i
       }
-    }
-  }
-  minimax() {
-    console.log(this)
-    // console.log(game)
-    if (!this.board.includes('')) { //game over
-      return 10
-      // return game.score
-    } else {
-      let arr = []
-      // let game = new Game(this.board, this.currentTurn)
-      let nextMoves = this.nextMoves() //fix
-      nextMoves.forEach((move, index) => {
-        console.log(move)
-        // arr.push(move.minimax())
-        return move.minimax()
-      }) //index will be inccorect
-      // if (game.currentTurn = 'X') {
-        return arr[0] //change to max later
-      // }
-    }
-  }
-  
-
-
-  endGame(tie) {
-    let title = this.currentTurn + ' wins'
-    if (tie) {
-      title = 'Tie!'
-    }
-    document.getElementById('end-text').innerHTML = title
-    document.getElementById('end-screen').style.display = 'flex'
+    })
+    choice = moves[index]
+    return max
+  } else {
+    let min = 0
+    let index = 0
+    scores.forEach((score, i) => {
+      if (score < min) {
+        min = score
+        index = i
+      }
+    })
+    choice = moves[index]
+    return min
   }
 }
 
-let emptyBoard = []
-for (let i = 0; i < 9; i++) {
-  emptyBoard.push('')
+function endGame(tie) {
+  let title = this.currentTurn + ' wins'
+  if (tie) {
+    title = 'Tie!'
+  }
+  document.getElementById('end-text').innerHTML = title
+  document.getElementById('end-screen').style.display = 'flex'
 }
-game = new Game(emptyBoard, 'X')
-console.log(game.nextMoves())
