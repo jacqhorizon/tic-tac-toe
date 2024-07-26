@@ -23,11 +23,12 @@ class Game {
     for (let i = 0; i < this.board.length; i++) {
       let copy = [...this.board]
       if (this.board[i] == '') {
-        copy[i] = this.currentTurn
-        moves.push(new Game(copy, nextTurn))
+        // copy[i] = this.currentTurn
+        // moves.push(new Game(copy, nextTurn))
+        moves.push(i)
       }
     }
-    return moves
+    return moves //return array of indexes
   }
 
   checkWin(currentPlayer) {
@@ -60,22 +61,13 @@ class Game {
 
 //game must be over to score
 const score = (game) => {
-  let x = 0
-  let o = 0
-  game.board.forEach((elem) => {
-    if (elem == 'x') {
-      x++
+    if(game.checkWin('x') || game.checkWin('o') || !game.board.includes('')) {
+        return 10
+    } else if (game.checkWin('o')) {
+        return -10
     } else {
-      o++
+        return 0
     }
-  })
-  if (x > o) {
-    return 10
-  } else if (x < o) {
-    return -10
-  } else {
-    return 0
-  }
 }
 
 let choice
@@ -87,9 +79,17 @@ const minimax = (game) => {
   }
   let scores = []
   let moves = []
-  game.nextMoves().forEach((element) => {
+
+  let nextTurn = 'o'
+  if (game.currentTurn == 'o') {
+    nextTurn = 'x'
+  }
+
+  game.nextMoves().forEach((element) => { //indexes
     // console.log(element)
-    scores.push(minimax(element))
+    let tmp = new Game([...game.board], nextTurn)
+    tmp.board[element] = game.currentTurn
+    scores.push(minimax(tmp))
     moves.push(element)
   })
   // console.log(scores)
@@ -118,7 +118,7 @@ const minimax = (game) => {
   }
 }
 
-let test = new Game(['x', 'o', 'x', 'o', '', 'o', 'o', '', ''])
+let test = new Game(['x', 'o', 'x', 'o', '', 'o', 'o', 'x', ''])
 
 minimax(test)
 console.log('choice=', choice)
