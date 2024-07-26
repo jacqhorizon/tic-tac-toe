@@ -1,3 +1,4 @@
+let choice
 class Game {
   constructor(board, currentTurn) {
     this.over = false
@@ -14,6 +15,25 @@ class Game {
     }
   }
 
+  move(index) {
+    this.board[index] = this.currentTurn
+    if (this.checkWin(this.currentTurn)) {
+      this.over = true
+    }
+    if (this.currentTurn == 'x') {
+      this.currentTurn = 'o'
+    } else {
+      this.currentTurn = 'x'
+    }
+  }
+
+  turn(index) {
+    this.move(index)
+    if (!this.over) {
+      minimax(this)
+      this.move(choice)
+    }
+  }
   nextMoves() {
     let moves = []
     let nextTurn = 'o'
@@ -28,6 +48,7 @@ class Game {
         moves.push(i)
       }
     }
+    console.log(moves)
     return moves //return array of indexes
   }
 
@@ -61,19 +82,18 @@ class Game {
 
 //game must be over to score
 const score = (game) => {
-    if(game.checkWin('x') || game.checkWin('o') || !game.board.includes('')) {
-        return 10
-    } else if (game.checkWin('o')) {
-        return -10
-    } else {
-        return 0
-    }
+  if (game.checkWin('x')) {
+    return 10
+  } else if (game.checkWin('o')) {
+    return -10
+  } else {
+    return 0
+  }
 }
 
-let choice
 const minimax = (game) => {
   if (game.over) {
-    console.log(game)
+    // console.log(game)
     // console.log('game over')
     return score(game)
   }
@@ -85,15 +105,17 @@ const minimax = (game) => {
     nextTurn = 'x'
   }
 
-  game.nextMoves().forEach((element) => { //indexes
+  game.nextMoves().forEach((element) => {
+    //indexes
     // console.log(element)
     let tmp = new Game([...game.board], nextTurn)
     tmp.board[element] = game.currentTurn
+    console.log(tmp)
     scores.push(minimax(tmp))
     moves.push(element)
   })
   // console.log(scores)
-  if (game.currentTurn == 'x') {
+  if (game.currentTurn == 'o') {
     let max = 0
     let index = 0
     scores.forEach((score, i) => {
@@ -118,9 +140,8 @@ const minimax = (game) => {
   }
 }
 
-let test = new Game(['x', 'o', 'x', 'o', '', 'o', 'o', 'x', ''])
+let test = new Game(['x', 'o', 'x', 'o', '', '', '', 'x', ''])
 
-minimax(test)
-console.log('choice=', choice)
-
+test.turn(4)
+test.turn(8)
 console.log(test)
