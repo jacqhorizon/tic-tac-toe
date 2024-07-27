@@ -1,11 +1,12 @@
 let game
 
+// Used for start button and play again button
 function startGame() {
-  let emptyBoard = []
-  for (let i = 0; i < 9; i++) {
-    emptyBoard.push('')
-  }
+  //Create a new game instance
+  let emptyBoard = ['', '', '', '', '', '', '', '', '']
   game = new Game(emptyBoard, 'x')
+
+  //Set UI to reflect new game instance
   game.board.forEach((value, i) => {
     var id = 'c' + i
     document.getElementById(id).value = value
@@ -19,40 +20,49 @@ function startGame() {
   document.getElementById('game-screen').style.display = 'block'
 }
 
+// Used for return to title screen button
 function toTitle() {
   document.getElementById('title-screen').style.display = 'flex'
   document.getElementById('end-screen').style.display = 'none'
   document.getElementById('game-screen').style.display = 'none'
 }
 
-let choice
+let choice //Used to store the bot's choice to move
+
 class Game {
   constructor(board, currentTurn) {
+    //Default
     this.over = false
     this.currentTurn = 'x'
+    this.board = ['', '', '', '', '', '', '', '', '']
+    //Update with params
     if (currentTurn) {
       this.currentTurn = currentTurn
     }
-    this.board = ['', '', '', '', '']
     if (board) {
       this.board = board
     }
+    //Evaluate if game is over
     if (this.checkWin('x') || this.checkWin('o') || !this.board.includes('')) {
       this.over = true
     }
   }
 
   move(index) {
+    //Update board with given index
     this.board[index] = this.currentTurn
+    //Update UI
     var id = 'c' + index
     document.getElementById(id).value = this.currentTurn
     document.getElementById(id).disabled = false
+    //Evaluate if game is over
     if (this.checkWin(this.currentTurn)) {
       this.over = true
       document.getElementById('end-text').innerHTML =
         this.currentTurn + ' wins!'
       document.getElementById('end-screen').style.display = 'flex'
     } else {
+      //If game is not over, toggle next turn
       document
         .getElementById(game.currentTurn.toLowerCase() + '-turn')
         .classList.remove('current-turn')
@@ -66,17 +76,18 @@ class Game {
         .classList.add('current-turn')
     }
   }
-
+  //After each user move, bot waits 1 second, then moves
   turn(index) {
     this.move(index)
     setTimeout(() => {
       if (!this.over) {
-        minimax(this)
-        this.move(choice)
+        minimax(this, 0) //Calculates bot move and saves to choice
+        this.move(choice) //Bot moves
       }
-      console.log(this)
     }, 1000)
   }
+
+  //Evaluate all possible next moves, used for minimax
   nextMoves() {
     let moves = []
     let nextTurn = 'o'
@@ -84,16 +95,14 @@ class Game {
       nextTurn = 'x'
     }
     for (let i = 0; i < this.board.length; i++) {
-      let copy = [...this.board]
       if (this.board[i] == '') {
-        // copy[i] = this.currentTurn
-        // moves.push(new Game(copy, nextTurn))
         moves.push(i)
       }
     }
     return moves //return array of indexes
   }
 
+  //Evaluate if player has won
   checkWin(currentPlayer) {
     let winMap = [
       //horizontals
@@ -122,21 +131,23 @@ class Game {
   }
 }
 
-//game must be over to score
-const score = (game) => {
+//Calculate score of game outcome
+const score = (game, depth) => {
   if (game.checkWin('x')) {
-    return 10
+    return depth - 10
   } else if (game.checkWin('o')) {
-    return -10
+    return 10 - depth
   } else {
     return 0
   }
 }
 
-const minimax = (game) => {
+//Calculate optimal move for bot
+const minimax = (game, depth) => {
   if (game.over) {
-    return score(game)
+    return score(game, depth)
   }
+  depth += 1
   let scores = []
   let moves = []
 
@@ -146,14 +157,19 @@ const minimax = (game) => {
   }
 
   game.nextMoves().forEach((element) => {
-    //indexes
+    //Simulate next move
     let tmp = new Game([...game.board], nextTurn)
     tmp.board[element] = game.currentTurn
-    scores.push(minimax(tmp))
+    if (tmp.checkWin(tmp.currentTurn)) {
+      tmp.over = true
+    }
+    //Recursively simulate game outcomes and save scores
+    scores.push(minimax(tmp, depth))
     moves.push(element)
   })
+  //Minimax scores
   if (game.currentTurn == 'o') {
-    let max = 0
+    let max = scores[0]
     let index = 0
     scores.forEach((score, i) => {
       if (score > max) {
@@ -164,7 +180,7 @@ const minimax = (game) => {
     choice = moves[index]
     return max
   } else {
-    let min = 0
+    let min = scores[0]
     let index = 0
     scores.forEach((score, i) => {
       if (score < min) {
@@ -175,13 +191,4 @@ const minimax = (game) => {
     choice = moves[index]
     return min
   }
-}
-
-function endGame(tie) {
-  let title = this.currentTurn + ' wins'
-  if (tie) {
-    title = 'Tie!'
-  }
-  document.getElementById('end-text').innerHTML = title
-  document.getElementById('end-screen').style.display = 'flex'
 }
