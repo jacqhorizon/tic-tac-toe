@@ -93,19 +93,13 @@ class Game {
         for (const move of nextMoves) {
           let tmpBoard = [...this.board] //copy current board
           tmpBoard[move] = 'o'
-          // console.log(tmpBoard)
           let nextGame = new Game(tmpBoard, 'o')
           let score = minimax(nextGame, 0, false)
-          // console.log(score)
           if (score > bestScore) {
             bestScore = score
             bestMove = move
           }
         }
-        // console.log(bestScore)
-        // return bestScore
-        // let score = minimax(this, 0) //Calculates bot move and saves to choice
-        // console.log(score)
         this.move(bestMove) //Bot moves
       }
     }, 1000)
@@ -165,82 +159,7 @@ class Game {
   }
 }
 
-//Calculate score of game outcome
-// const score = (game, depth) => {
-//   if (game.checkWin('x')) {
-//     return depth - 10
-//   } else if (game.checkWin('o')) {
-//     return 10 - depth
-//   } else {
-//     return 0
-//   }
-// }
-
-let scores = {
-  x: -10,
-  o: 10,
-  tie: 0
-}
-
-const score = (result, depth) => {
-  if (result == 'x') {
-  }
-}
-
 //Calculate optimal move for bot
-// const minimax = (game, depth) => {
-//   if (game.over) {
-//     return score(game, depth)
-//   }
-//   depth += 1
-//   let scores = []
-//   let moves = []
-
-//   let nextTurn = 'o'
-//   if (game.currentTurn == 'o') {
-//     nextTurn = 'x'
-//   }
-
-//   game.nextMoves().forEach((element) => {
-//     //Simulate next move
-//     let tmp = new Game([...game.board], nextTurn)
-//     tmp.board[element] = game.currentTurn
-//     if (tmp.checkWin(tmp.currentTurn)) {
-//       tmp.over = true
-//     }
-//     //Recursively simulate game outcomes and save scores
-//     scores.push(minimax(tmp, depth))
-//     moves.push(element)
-//   })
-//   //Minimax scores
-//   if (game.currentTurn == 'o') {
-//     let max = 0
-//     let index = 0
-//     scores.forEach((score, i) => {
-//       if (score > max) {
-//         max = score
-//         index = i
-//       }
-//     })
-//     if (max > bestScore) {
-//       choice = moves[index]
-//       bestScore = max
-//     }
-//     return max
-//   } else {
-//     let min = 100
-//     let index = 0
-//     scores.forEach((score, i) => {
-//       if (score < min) {
-//         min = score
-//         index = i
-//       }
-//     })
-//     // choice = moves[index]
-//     return min
-//   }
-// }
-
 function minimax(tmpGame, depth, isMaximizing) {
   let result = tmpGame.checkWin()
   if (result == 'x') {
