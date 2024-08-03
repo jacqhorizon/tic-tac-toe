@@ -51,11 +51,17 @@ class Game {
     //Update UI
     var id = 'c' + index
     document.getElementById(id).value = this.currentTurn
-    document.getElementById(id).disabled = false
+    document.getElementById(id).disabled = true
     //Evaluate if game is over
-    if (this.checkWin()) {
-      document.getElementById('end-text').innerHTML =
-        this.currentTurn + ' wins!'
+    let win = this.checkWin()
+    if (win) {
+      if (win == 'tie') {
+        document.getElementById('end-text').innerHTML = 'Tie!'
+      } else {
+        document.getElementById('end-text').innerHTML =
+          win.toUpperCase() + ' wins!'
+      }
+
       document.getElementById('end-screen').style.display = 'flex'
       return true
     } else {
