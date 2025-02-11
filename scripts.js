@@ -12,12 +12,16 @@ function startGame() {
     document.getElementById(id).value = value
     document.getElementById(id).disabled = false
   })
-  document
-    .getElementById(game.currentTurn.toLowerCase() + '-turn')
-    .classList.add('current-turn')
+  document.getElementById('x-turn').className = 'badge text-bg-dark'
+  document.getElementById('o-turn').className = 'badge text-bg-light'
   document.getElementById('title-screen').style.display = 'none'
   document.getElementById('end-screen').style.display = 'none'
   document.getElementById('game-screen').style.display = 'block'
+  document.getElementById('game-screen').style.pointerEvents = 'auto'
+  document.body.style.backgroundColor = ''
+  document.getElementById(
+    'probability'
+  ).innerHTML = 'Click a square to begin'
 }
 
 // Used for return to title screen button
@@ -25,6 +29,7 @@ function toTitle() {
   document.getElementById('title-screen').style.display = 'flex'
   document.getElementById('end-screen').style.display = 'none'
   document.getElementById('game-screen').style.display = 'none'
+  document.body.style.backgroundColor = ''
 }
 
 let choice = 3 //Used to store the bot's choice to move
@@ -56,27 +61,27 @@ class Game {
     let win = this.checkWin()
     if (win) {
       if (win == 'tie') {
-        document.getElementById('end-text').innerHTML = 'Tie!'
+        document.getElementById('end-text').innerHTML = 'You Lose!'
       } else {
-        document.getElementById('end-text').innerHTML =
-          win.toUpperCase() + ' wins!'
+        document.getElementById('end-text').innerHTML = 'You Lose!'
       }
 
       document.getElementById('end-screen').style.display = 'flex'
+      document.getElementById('game-screen').classList.remove('losing')
       return true
     } else {
       //If game is not over, toggle next turn
-      document
-        .getElementById(game.currentTurn.toLowerCase() + '-turn')
-        .classList.remove('current-turn')
+      document.getElementById(
+        game.currentTurn.toLowerCase() + '-turn'
+      ).className = 'badge text-bg-light'
       if (this.currentTurn == 'x') {
         this.currentTurn = 'o'
       } else {
         this.currentTurn = 'x'
       }
-      document
-        .getElementById(game.currentTurn.toLowerCase() + '-turn')
-        .classList.add('current-turn')
+      document.getElementById(
+        game.currentTurn.toLowerCase() + '-turn'
+      ).className = 'badge text-bg-dark'
       return false
     }
   }
@@ -84,23 +89,41 @@ class Game {
   turn(index) {
     let userWin = this.move(index)
     console.log(this.nextMoves())
+    document.getElementById('game-screen').style.pointerEvents = 'none'
     setTimeout(() => {
       if (!userWin) {
         //is maximizing when o plays
         let bestScore = -Infinity
         let bestMove
         let nextMoves = this.nextMoves() // array of next moves
+        let outcomes = { x: -1, o: 0, tie: 0 }
         for (const move of nextMoves) {
           let tmpBoard = [...this.board] //copy current board
           tmpBoard[move] = 'o'
           let nextGame = new Game(tmpBoard, 'o')
-          let score = minimax(nextGame, 0, false)
+          let score = minimax(nextGame, 0, false, outcomes)
           if (score > bestScore) {
             bestScore = score
             bestMove = move
           }
         }
         this.move(bestMove) //Bot moves
+        console.log(
+          outcomes,
+          outcomes.x / (outcomes.x + outcomes.o + outcomes.tie)
+        )
+        let probability =
+          (outcomes.o + outcomes.tie) / (outcomes.o + outcomes.tie + outcomes.x)
+        let winningPercent = probability < 1 ? Math.floor((1 - probability) * 100) : 0
+
+        document.getElementById(
+          'probability'
+        ).innerHTML = `${winningPercent}% chance of winning`
+        if (probability > 0.5) {
+          document.body.style.backgroundColor = `rgba(255,0,0,${probability})`
+          document.getElementById('game-screen').classList.add('losing')
+        }
+        document.getElementById('game-screen').style.pointerEvents = 'auto'
       }
     }, 1000)
   }
@@ -160,13 +183,16 @@ class Game {
 }
 
 //Calculate optimal move for bot
-function minimax(tmpGame, depth, isMaximizing) {
+function minimax(tmpGame, depth, isMaximizing, outcomes) {
   let result = tmpGame.checkWin()
   if (result == 'x') {
+    outcomes.x += 1
     return depth - 10
   } else if (result == 'o') {
+    outcomes.o += 1
     return 10 - depth
   } else if (result == 'tie') {
+    outcomes.tie += 1
     return 0
   }
   if (isMaximizing) {
@@ -178,7 +204,7 @@ function minimax(tmpGame, depth, isMaximizing) {
       tmpBoard[move] = 'o'
       // console.log(tmpBoard)
       let nextGame = new Game(tmpBoard, 'x')
-      let score = minimax(nextGame, depth + 1, false)
+      let score = minimax(nextGame, depth + 1, false, outcomes)
       // console.log(score)
       bestScore = Math.max(score, bestScore)
     }
@@ -191,7 +217,7 @@ function minimax(tmpGame, depth, isMaximizing) {
       let tmpBoard = [...tmpGame.board] //copy current board
       tmpBoard[move] = 'x'
       let nextGame = new Game(tmpBoard, 'o')
-      let score = minimax(nextGame, depth + 1, true)
+      let score = minimax(nextGame, depth + 1, true, outcomes)
       bestScore = Math.min(score, bestScore)
     }
     return bestScore
