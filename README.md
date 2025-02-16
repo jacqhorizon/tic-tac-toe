@@ -1,6 +1,9 @@
-# Tic Tac Toe Bot
+<h1 align="center">Tic Tac Toe Bot</h1>
 
-An impossible game of Tic Tac Toe - play against an unbeatable AI 
+<p align="center">An impossible game of Tic Tac Toe - play against an unbeatable AI</p>
+
+<p align="center"><a href="https://jacqhorizon.github.io/tic-tac-toe/">Play the Game!</a></p>
+
 
 ## Description
 
